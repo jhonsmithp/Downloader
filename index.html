@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ইউটিউব ভিডিও ডাউনলোডার</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            color: #e62117;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .input-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #e62117;
+        }
+
+        button {
+            padding: 12px 18px;
+            background-color: #e62117;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #cc1810;
+        }
+
+        #loader {
+            display: none;
+            color: #e62117;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        #result {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .dl-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .dl-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>YouTube Downloader</h2>
+    <p>লিংক দিন এবং এক ক্লিকেই ডাউনলোড করুন</p>
+    
+    <div class="input-box">
+        <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
+        <button onclick="getDownloadLink()">Download</button>
+    </div>
+
+    <div id="loader">প্রসেস করা হচ্ছে, কিছুক্ষণ অপেক্ষা করুন...</div>
+
+    <div id="result">
+        <a id="downloadBtn" class="dl-btn" href="#" target="_blank">ভিডিও সেভ করুন</a>
+    </div>
+</div>
+
+<script>
+    async function getDownloadLink() {
+        const url = document.getElementById('videoUrl').value.trim();
+        const loader = document.getElementById('loader');
+        const result = document.getElementById('result');
+
+        if (!url) {
+            alert('দয়া করে একটি সঠিক ইউটিউব ভিডিও লিংক দিন!');
+            return;
+        }
+
+        loader.style.display = 'block';
+        result.style.display = 'none';
+
+        try {
+            const response = await fetch('https://api.cobalt.tools/api/json', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url: url })
+            });
+
+            const data = await response.json();
+
+            if (data.url) {
+                document.getElementById('downloadBtn').href = data.url;
+                result.style.display = 'block';
+            } else {
+                alert('ভিডিও প্রসেস করা সম্ভব হয়নি। লিংকটি চেক করুন।');
+            }
+        } catch (error) {
+            alert('একটি সমস্যা হয়েছে! অনুগ্রহ করে আবার চেষ্টা করুন।');
+        } finally {
+            loader.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
