@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ইউটিউব ভিডিও ডাউনলোডার</title>
+    <title>Multi YouTube Downloader</title>
     <style>
         * {
             box-sizing: border-box;
@@ -23,17 +23,17 @@
 
         .card {
             background: #ffffff;
-            padding: 30px;
+            padding: 25px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 480px;
+            max-width: 600px;
             width: 100%;
             text-align: center;
         }
 
         h2 {
             color: #e62117;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         p {
@@ -75,59 +75,78 @@
             background-color: #cc1810;
         }
 
+        .video-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .video-item {
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 10px;
+            background: #fafafa;
+        }
+
         iframe {
             width: 100%;
-            height: 60px;
+            height: 280px;
             border: none;
-            margin-top: 15px;
-            display: none;
+            border-radius: 6px;
         }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>YouTube Downloader</h2>
-    <p>লিংক দিন এবং এক ক্লিকেই ডাউনলোড করুন</p>
+    <h2>Multi YouTube Downloader</h2>
+    <p>লিংক দিন এবং একের পর এক ভিডিও যুক্ত করে ডাউনলোড করুন</p>
     
     <div class="input-box">
         <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
-        <button onclick="getDownloadLink()">Download</button>
+        <button onclick="addVideo()">Add to List</button>
     </div>
 
-    <!-- সেফ ডাউনলোড বাটন ফ্রেম -->
-    <iframe id="downloadFrame" src=""></iframe>
+    <div id="videoList" class="video-list"></div>
 </div>
 
 <script>
-    function getDownloadLink() {
-        const urlInput = document.getElementById('videoUrl').value.trim();
-        const frame = document.getElementById('downloadFrame');
+    function addVideo() {
+        const urlInput = document.getElementById('videoUrl');
+        const url = urlInput.value.trim();
+        const videoList = document.getElementById('videoList');
 
-        if (!urlInput) {
-            alert('দয়া করে একটি সঠিক ইউটিউব ভিডিও লিংক দিন!');
+        if (!url) {
+            alert('দয়া করে একটি সঠিক লিঙ্ক দিন!');
             return;
         }
 
-        // YouTube Video ID বের করা
         let videoId = "";
-        if (urlInput.includes("v=")) {
-            videoId = urlInput.split("v=")[1].split("&")[0];
-        } else if (urlInput.includes("youtu.be/")) {
-            videoId = urlInput.split("youtu.be/")[1].split("?")[0];
+        if (url.includes("v=")) {
+            videoId = url.split("v=")[1].split("&")[0];
+        } else if (url.includes("youtu.be/")) {
+            videoId = url.split("youtu.be/")[1].split("?")[0];
         }
 
         if (!videoId) {
-            alert('সঠিক ইউটিউব লিংক পাওয়া যায়নি!');
+            alert('সঠিক ইউটিউব লিংক পাওয়া যায়নি!');
             return;
         }
 
-        // সরাসরি রেডিমেড ডাউনলোডার উইজেট লোড করবে
-        frame.src = `https://loader.to/api/card/?url=https://www.youtube.com/watch?v=${videoId}`;
-        frame.style.display = 'block';
+        // কার্ড এলিমেন্ট তৈরি
+        const item = document.createElement('div');
+        item.className = 'video-item';
+
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://loader.to/api/card/?url=https://www.youtube.com/watch?v=${videoId}`;
+
+        item.appendChild(iframe);
+        videoList.prepend(item);
+
+        urlInput.value = '';
     }
 </script>
 
 </body>
 </html>
-
